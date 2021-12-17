@@ -1,9 +1,22 @@
 import React from "react";
+import Task from "./Task"
 
-function TaskList() {
+// destructure TASKS into {text} and {category} and send to <Task />
+
+function TaskList({ TASKS }) {
+
+  // console.log({ TASKS })
+
   return (
     <div className="tasks">
-      {/* display a list of tasks using Task component */}
+     {
+       TASKS.map((task) => { 
+         return ( <Task key={task.id} 
+                        tasktest={task.text} 
+                        category={task.category} /> )
+       })
+
+     } 
     </div>
   );
 }
