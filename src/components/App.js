@@ -1,34 +1,69 @@
-import React from ''"react";
+import React, { useState } from "react";
 import CategoryFilter from "./CategoryFilter";
 import NewTaskForm from "./NewTaskForm";
 import TaskList from "./TaskList";
-import {v4 as uuidv4} from 'uuid'
+// import {v4 as uuidv4} from 'uuid'
 
 import { CATEGORIES, TASKS } from "../data";
 console.log("Here's the data you're working with");
 console.log({ CATEGORIES, TASKS });
 
-// I assume I'm meant to incorporate State in this lab.. where would I do that?
+
+
 
 
 
 function App() {
 
-  //  why does this pass the task ID, task name, & task category?
+  
+  const [tasks, setTasks] = useState(TASKS)
+  //      [get it, set it]
 
-  const tasksWithIds = TASKS.map((task) => {
-    task.id = uuidv4()
-    return task
-  });
+  // state of text "details" input
+  const [text, setDetails] = useState('')
 
-  // console.log(tasksWithIds)
+  const [category, setCategoryChoice] = useState('Code')
+  
+  const [categorystate, setCategoryState] = useState('All')
+
+  const categoryChoices = CATEGORIES.filter(category => category !== 'All')
+  
+  // callback for delete button
+  function handleDeleteTask (junk) {
+    setTasks(tasks.filter(task => task.text !== junk))
+  }
+  // set state for category button
+  function catButtonClick (category) {
+    setCategoryState(category)
+  }
+  //  filter category button
+  function filterTasks() {
+    if (categorystate === 'All') {
+      return tasks
+    } else {
+        return tasks.filter(task => task.category === categorystate)
+    }
+  }
+
+
+  function onTaskFormSubmit(event){
+    event.preventDefault();
+    const newTask = {
+      text,
+      category
+    }
+    console.log(newTask);
+    setTasks([...tasks,newTask])
+  }
 
   return (
     <div className="App">
       <h2>My tasks</h2>
-      <CategoryFilter />
-      <NewTaskForm />
-      <TaskList TASKS={tasksWithIds} />
+      <CategoryFilter categories={CATEGORIES}
+                      catButtonClick={catButtonClick}
+                      /*handleCategoryChange={handleCategoryChange} */ />
+      <NewTaskForm  categoryChoices={categoryChoices} setDetails={setDetails} setCategoryChoice={setCategoryChoice} onTaskFormSubmit={onTaskFormSubmit}/>
+      <TaskList tasks={filterTasks()} handleDeleteTask={handleDeleteTask} />
     </div>
   );
 }
